@@ -10,11 +10,13 @@ module Spree
         order = current_order
         if (order.payment_state == "paid") or (order.payment_state == "credit_owed")
           flash[:notice] = t('spree.paypal_website_standard.payment_received')
-          state_callback(:after)
+          # Unset the order id as it's completed.
+          session[:order_id] = nil
         else
           while order.state != "complete"
             order.next
-            state_callback(:after)
+            # Unset the order id as it's completed.
+            session[:order_id] = nil
           end
           flash[:notice] = t('spree.paypal_website_standard.order_processed_successfully')
           flash[:commerce_tracking] = "nothing special"

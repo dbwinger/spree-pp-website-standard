@@ -4,10 +4,10 @@ module Spree
     skip_before_filter :restriction_access
     
     def create
-      if(Spree::PaypalWebsiteStandard::Config.encrypted && (params[:secret] != Spree::PaypalWebsiteStandard::Config.ipn_secret))
-        logger.info "PayPal_Website_Standard: attempt to send an IPN with invalid secret"
-        raise Exception
-      end
+      # if(Spree::PaypalWebsiteStandard::Config.encrypted && (params[:secret] != Spree::PaypalWebsiteStandard::Config.ipn_secret))
+      #   logger.info "PayPal_Website_Standard: attempt to send an IPN with invalid secret"
+      #   raise Exception
+      # end
       
       @order = Spree::Order.find_by_number(params[:invoice])
       Spree::PaymentNotification.create!(:params => params,

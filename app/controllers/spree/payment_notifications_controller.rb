@@ -37,7 +37,7 @@ module Spree
         order.payments << payment
         payment.started_processing
         
-        payment.complete
+        order.payment.complete
         logger.info("PayPal_Website_Standard: order #{order.number} (#{order.id}) -- completed payment")
 
         until @order.state == "complete"

@@ -37,15 +37,24 @@ module Spree
         order.payments << payment
         payment.started_processing
         
-        
-        until @order.state == "complete"
-          if @order.next!
-            @order.update!
-            state_callback(:after)
-          end
-        end
         payment.complete
         logger.info("PayPal_Website_Standard: order #{order.number} (#{order.id}) -- completed payment")
+
+        @order.reload # otherwise it might not see the newly added payment
+        @order.update!
+        if @order.can_go_to_state?("complete")
+          begin
+            until @order.state == "complete"
+              # this is bad and I feel bad
+              # not-full-amount payments should be handled differently
+              @order.next!
+              @order.update!
+              state_callback(:after)
+            end
+          rescue StateMachine::InvalidTransition
+            # couldn't transition, order is not paid fully
+          end
+        end
 
         logger.info("PayPal_Website_Standard: Order #{order.number} (#{order.id}) updated successfully, IPN complete")
       end

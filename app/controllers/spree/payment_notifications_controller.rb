@@ -82,7 +82,7 @@ module Spree
     end
     
     def default_country
-      Country.find Spree::PaypalWebsiteStandard::Config.default_country_id
+      Country.find_by_iso "US"
     end
     
   end

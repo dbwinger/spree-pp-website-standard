@@ -14,7 +14,7 @@ module Spree
           session[:order_id] = nil
         else
           while order.state != "complete"
-            order.next
+            order.next!
             # Unset the order id as it's completed.
             session[:order_id] = nil
           end

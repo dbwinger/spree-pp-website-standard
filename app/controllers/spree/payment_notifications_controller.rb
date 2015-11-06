@@ -37,15 +37,15 @@ module Spree
         order.payments << payment
         payment.started_processing
         
-        order.payment.complete
-        logger.info("PayPal_Website_Standard: order #{order.number} (#{order.id}) -- completed payment")
-
+        
         until @order.state == "complete"
           if @order.next!
             @order.update!
             state_callback(:after)
           end
         end
+        payment.complete
+        logger.info("PayPal_Website_Standard: order #{order.number} (#{order.id}) -- completed payment")
 
         logger.info("PayPal_Website_Standard: Order #{order.number} (#{order.id}) updated successfully, IPN complete")
       end
